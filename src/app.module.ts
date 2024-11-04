@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ChatModule } from './chat/chat.module';
+import { DepModule } from './dep/dep.module';
 import { Chat } from './chat/chat.entity';
+import { Dep } from './dep/dep.entity';
 
 @Module({
   imports: [
@@ -18,12 +20,13 @@ import { Chat } from './chat/chat.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Chat],
+        entities: [Chat, Dep],
         synchronize: true, 
       }),
       inject: [ConfigService],
     }),
     ChatModule,
+    DepModule,
   ],
 })
 export class AppModule {}
