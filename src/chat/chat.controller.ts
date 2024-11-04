@@ -1,4 +1,3 @@
-// src/chat/chat.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
@@ -9,7 +8,7 @@ export class ChatController {
   @Post()
   async handleChat(@Body() body: { chat: string }) {
     const { chat } = body;
-    const response = await this.chatService.postChat(chat);
+    const response = await this.chatService.getChatResponse(chat);
     return { response };
   }
 }

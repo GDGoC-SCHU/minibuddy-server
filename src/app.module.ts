@@ -1,14 +1,29 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ChatModule } from './chat/chat.module';
+import { Chat } from './chat/chat.entity';
 
 @Module({
   imports: [
-    ChatModule,  // ChatModule을 불러와서 사용
     ConfigModule.forRoot({
-      isGlobal: true, // 모든 모듈에서 ConfigService를 사용할 수 있도록 전역 설정
+      isGlobal: true,
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [Chat],
+        synchronize: true, 
+      }),
+      inject: [ConfigService],
+    }),
+    ChatModule,
   ],
 })
 export class AppModule {}
