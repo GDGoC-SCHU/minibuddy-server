@@ -5,14 +5,14 @@ import { ChatService } from './chat.service';
 import { Chat } from './chat.entity';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
-import { DepModule } from '../dep/dep.module'; // DepModule 추가
+import { DepModule } from '../dep/dep.module'; 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat]), // Chat 엔티티 리포지토리 등록
+    TypeOrmModule.forFeature([Chat]), 
     HttpModule,
     ConfigModule,
-    DepModule, // DepModule 추가
+    DepModule, 
   ],
   controllers: [ChatController],
   providers: [ChatService],
