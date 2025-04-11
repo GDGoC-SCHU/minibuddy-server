@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://${DATABASE_URL}/${DATABASE_TABLE}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    user:
+      name: ${SECURITY_USERNAME}
+      password: ${SECURITY_PASSWORD}
