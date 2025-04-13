@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package chat;
+
+// -------- Request message --------
+message ChatRequest {
+  string user_id = 1;
+  string message = 2;
+}
+
+message MemoryAnswerRequest {
+  string user_id = 1;
+  string answer = 2;
+  string question_id = 3;
+}
+
+// -------- Response message --------
+message ChatResponse {
+  string reply = 1;
+  float depression_score = 2;
+}
+
+message MemoryQuestionResponse {
+  string question = 1;
+  float depression_score = 2;
+}
+
+message MemoryAnswerResult {
+  string reply = 1;
+  float mci_score = 2;
+}
+
+service ChatAiService {
+  rpc GetChatResponse(ChatRequest) returns (ChatResponse);
+  rpc GetMemoryQuestion(ChatRequest) returns (MemoryQuestionResponse);
+  rpc EvaluateMemoryAnswer(MemoryAnswerRequest) returns (MemoryAnswerResult);
+}
