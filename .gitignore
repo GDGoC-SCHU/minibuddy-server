@@ -1,2 +1,7 @@
 .env
 db-account-key.json
+
+# gRPC generated files (ignore build artifacts)
+**/*.pb.*
+**/*.grpc.ts
+build/generated/
