@@ -17,19 +17,21 @@ message MemoryAnswerRequest {
 // -------- Response message --------
 message ChatResponse {
   string reply = 1;
-  float depression_score = 2;
+  int dep_score = 2;
 }
 
 message MemoryQuestionResponse {
-  string question = 1;
-  float depression_score = 2;
+  string question = 1;      
+  int dep_score = 2;
 }
 
 message MemoryAnswerResult {
   string reply = 1;
-  float mci_score = 2;
+  int mci_score = 2;
+  int dep_score = 3;
 }
 
+// -------- Service --------
 service ChatAiService {
   rpc GetChatResponse(ChatRequest) returns (ChatResponse);
   rpc GetMemoryQuestion(ChatRequest) returns (MemoryQuestionResponse);
