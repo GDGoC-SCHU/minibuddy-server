@@ -7,5 +7,5 @@ RUN gradle build -x test
 # Step 2: Run
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/app.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
