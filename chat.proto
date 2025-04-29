@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 package chat;
+option java_multiple_files=true;
+option java_package='com.minibuddy.app';
+option java_outer_classname="ChatProto";
 
 // -------- Request message --------
 message ChatRequest {
@@ -17,13 +20,13 @@ message MemoryAnswerRequest {
 // -------- Response message --------
 message ChatResponse {
   string reply = 1;
-  int32 dep_score = 2;        // 우울 점수
-  int32 anx_score = 3;        // 불안 점수
-  int32 str_score = 4;  
+  int32 dep_score = 2;
+  int32 anx_score = 3;
+  int32 str_score = 4;
 }
 
 message MemoryQuestionResponse {
-  string question = 1;      
+  string question = 1;
   int32 dep_score = 2;
 }
 
