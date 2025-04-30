@@ -1,13 +1,26 @@
-server:
-  port: 8080
-
 spring:
   datasource:
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    url: jdbc:mysql://${DATABASE_URL}/${DATABASE_TABLE}
+    username: ${LOCAL_MYSQL_USERNAME}
+    password: ${LOCAL_MYSQL_PASSWORD}
+    url: jdbc:mysql://${LOCAL_MYSQL_URL}/${LOCAL_MYSQL_TABLE}
     driver-class-name: com.mysql.cj.jdbc.Driver
   security:
     user:
       name: ${SECURITY_USERNAME}
       password: ${SECURITY_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+
+
+firebase:
+  key-path: app-server/src/main/resources/firebase-service-account.json
+grpc:
+  client:
+    stockService: # 이 이름이 @GrpcClient 와 이름이 일치해야함.
+      address: static://localhost:9090
+      negotiation-type: PLAINTEXT
+#    chatService:
+#      address:
