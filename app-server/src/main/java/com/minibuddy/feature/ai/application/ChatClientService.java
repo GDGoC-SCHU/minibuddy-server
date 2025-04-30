@@ -6,9 +6,11 @@ import com.minibuddy.feature.ai.client.dto.MemoryAnswerResponse;
 import com.minibuddy.feature.ai.client.dto.MemoryQuestionResponse;
 import com.minibuddy.feature.ai.client.dto.NormalChatResponse;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("prod")
 public class ChatClientService implements ChatClient {
 
     @GrpcClient("chatAiService")
