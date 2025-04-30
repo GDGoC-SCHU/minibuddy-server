@@ -19,6 +19,6 @@ public class ErrorController {
 
     @GetMapping("/custom")
     public SuccessResponse<?> errorCustom() {
-        throw new CustomException(UserErrorCode.MEMBER_NOT_FOUND);
+        throw new CustomException(UserErrorCode.USER_NOT_FOUND);
     }
 }
