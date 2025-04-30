@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum UserErrorCode implements ErrorCodeIfs {
 
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     ;
 
     private final HttpStatus httpStatus;
