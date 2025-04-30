@@ -1,13 +1,14 @@
 package com.minibuddy.feature.user.domain;
 
 import com.minibuddy.feature.chat.domain.Chat;
+import com.minibuddy.feature.chat.domain.ChatStat;
+import com.minibuddy.global.converter.StringListConverter;
+import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,55 +16,46 @@ import java.util.List;
 @Table(name = "user")
 @NoArgsConstructor
 @Getter
-public class User {
+public class User extends BaseEntity {
 
     @Id
     private String userId;  // firebase UID
-
-    @Column(unique = true, nullable = false)
-    private String email;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private int age;
+    private LocalDate birthday;
 
-    private int chatCount;
+    @Convert(converter = StringListConverter.class)
+    private List<String> keywords;
 
     @Column(nullable = false)
     private String notificationToken;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Score score;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Chat> chats = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<DepressionScore> depressionScores = new ArrayList<>();
+    private List<ChatStat> chatStats = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<MciScore> mciScores = new ArrayList<>();
+    private List<ScoreHistory> scoreHistories = new ArrayList<>();
 
-    @Builder
-    public User(String userId, String email, String name, int age, LocalDateTime createdAt, String notificationToken) {
-        this.userId = userId;
-        this.email = email;
-        this.name = name;
-        this.age = age;
-        this.createdAt = createdAt;
-        this.notificationToken = notificationToken;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<MemoryResult> memoryResults = new ArrayList<>();
+
+    public void addChat(Chat chat) {
+        this.chats.add(chat);
+        chat.setUser(this);
     }
 
-    public void updateChatCount() {
-        this.chatCount += 1;
-    }
-
-    public DepressionScore saveDepScore(int depScore, Long chatId) {
-        DepressionScore depressionScore = new DepressionScore(this, depScore, chatId);
-        this.getDepressionScores().add(depressionScore);
-        return depressionScore;
+    // 편의 메서드 추가
+    public void addScoreHistory(ScoreHistory history) {
+        this.scoreHistories.add(history);
+        history.setUser(this);
     }
 }

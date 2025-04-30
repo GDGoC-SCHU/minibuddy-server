@@ -13,7 +13,6 @@ public class PrincipalDetails implements UserDetails {
 
     private final String userId;
     private final String name;
-    private final String email;
     private final String role;
 
     @Override

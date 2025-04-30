@@ -1,19 +1,18 @@
 package com.minibuddy.feature.chat.domain;
 
+import com.minibuddy.feature.chat.domain.enums.EmotionType;
+import com.minibuddy.feature.user.domain.MemoryResult;
 import com.minibuddy.feature.user.domain.User;
+import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat")
 @NoArgsConstructor
 @Getter
-public class Chat {
+public class Chat extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,18 +26,22 @@ public class Chat {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 사용자가 보낸 채팅 메세지
 
-    private boolean isMemoryQuestion;   // true이면 기억력 질문에 대한 사용자의 응답
-    private boolean isUser; // true이면 일반 유저의 응답
+    @Column(nullable = false)
+    private Boolean isMemoryQuestion;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Boolean isUser;
 
-    @Builder
-    public Chat(User user, String content, boolean isMemoryQuestion, boolean isUser) {
+    @Embedded
+    private EmotionScores emotionScores;
+
+    @Enumerated(EnumType.STRING)
+    private EmotionType dominantEmotion;
+
+    @OneToOne(mappedBy = "answerChat", cascade = CascadeType.ALL)
+    private MemoryResult memoryResult;
+
+    public void setUser(User user) {
         this.user = user;
-        this.content = content;
-        this.isMemoryQuestion = isMemoryQuestion;
-        this.isUser = isUser;
     }
 }
