@@ -8,7 +8,7 @@ public interface ChatClient {
 
     NormalChatResponse normalChat(String userId, String message);
 
-    MemoryQuestionResponse memoryChat(String userId, String answer);
+    MemoryQuestionResponse memoryChat(String userId, String message);
 
     MemoryAnswerResponse memoryAnswer(String userId, String answer, String questionId);
 }

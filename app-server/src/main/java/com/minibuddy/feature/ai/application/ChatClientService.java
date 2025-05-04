@@ -27,7 +27,9 @@ public class ChatClientService implements ChatClient {
 
         return new NormalChatResponse(
                 response.getReply(),
-                response.getDepScore()
+                response.getDepScore(),
+                response.getAnxScore(),
+                response.getStrScore()
         );
     }
 
@@ -57,7 +59,8 @@ public class ChatClientService implements ChatClient {
         return new MemoryAnswerResponse(
                 response.getReply(),
                 response.getMciScore(),
-                response.getDepScore()
+                response.getDepScore(),
+                response.getMciReason()
         );
     }
 }
