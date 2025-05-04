@@ -3,6 +3,8 @@ package com.minibuddy.feature.chat.application;
 import com.minibuddy.feature.ai.client.dto.MemoryQuestionResponse;
 import com.minibuddy.feature.ai.client.dto.NormalChatResponse;
 import com.minibuddy.feature.user.domain.User;
+import com.minibuddy.global.error.code.ChatErrorCode;
+import com.minibuddy.global.error.exception.CustomException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +18,9 @@ public class ScoreUpdater {
             return handleNormalResponse(user, (NormalChatResponse) aiResponse);
         } else if (aiResponse instanceof MemoryQuestionResponse) {
             return handleMemoryQuestionResponse(user, (MemoryQuestionResponse) aiResponse);
+        } else {
+            throw new CustomException(ChatErrorCode.UNSUPPORTED_RESPONSE_TYPE);
         }
-        return null;
     }
 
     private String handleMemoryQuestionResponse(User user, MemoryQuestionResponse aiResponse) {
