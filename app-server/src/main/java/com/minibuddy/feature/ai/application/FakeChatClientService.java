@@ -13,7 +13,7 @@ public class FakeChatClientService implements ChatClient {
     @Override
     public NormalChatResponse normalChat(String userId, String message) {
         int score = (int) (Math.random() + 20);
-        return new NormalChatResponse("normal reply", score);
+        return new NormalChatResponse("normal reply", score, score, score);
     }
 
     @Override
@@ -25,6 +25,6 @@ public class FakeChatClientService implements ChatClient {
     @Override
     public MemoryAnswerResponse memoryAnswer(String userId, String answer, String questionId) {
         int score = (int) (Math.random() + 20);
-        return new MemoryAnswerResponse("memory answer", score, score);
+        return new MemoryAnswerResponse("memory answer", score, score, "reason");
     }
 }
