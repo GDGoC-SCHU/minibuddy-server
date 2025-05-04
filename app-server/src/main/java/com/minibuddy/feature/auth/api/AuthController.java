@@ -20,13 +20,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public SuccessResponse<?> signup(@RequestBody SignupRequest request) {
+    public SuccessResponse<UserResponse> signup(@RequestBody SignupRequest request) {
         UserResponse response = authService.register(request);
         return SuccessResponse.ok(response);
     }
 
     @PostMapping("/logout")
-    public SuccessResponse<?> logout(@AuthenticationPrincipal PrincipalDetails session) {
+    public SuccessResponse<String> logout(@AuthenticationPrincipal PrincipalDetails session) {
         String response = authService.logout(session);
         return SuccessResponse.ok(response);
     }

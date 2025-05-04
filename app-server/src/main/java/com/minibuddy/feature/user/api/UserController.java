@@ -20,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/delete")
-    public SuccessResponse<?> userWithdraw(@AuthenticationPrincipal PrincipalDetails session) {
+    public SuccessResponse<String> userWithdraw(@AuthenticationPrincipal PrincipalDetails session) {
         return SuccessResponse.ok(userService.withdrawal(session));
     }
 
     @PostMapping("/fcm-update")
-    public SuccessResponse<?> fcmTokenUpdate(
+    public SuccessResponse<UserResponse> fcmTokenUpdate(
             @AuthenticationPrincipal PrincipalDetails session,
             @RequestBody UpdateFcmRequest request
     ) {
