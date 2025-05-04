@@ -32,11 +32,6 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (!isAuthenticationRequired(path)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         FirebaseToken decodedToken = null;
@@ -51,7 +46,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             decodedToken = firebaseAuth.verifyIdToken(idToken);
         } catch (FirebaseAuthException e) {
             response.sendError(HttpStatus.UNAUTHORIZED.value());
-            return; // ★ 필터 체인 중단 ★
+            return;
         }
 
         UserDetails user = userDetailsService.loadUserByUsername(decodedToken.getUid());
@@ -60,9 +55,4 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
-
-    private boolean isAuthenticationRequired(String path) {
-        return !(path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs")); //|| path.startsWith("/api"));
-    }
-
 }

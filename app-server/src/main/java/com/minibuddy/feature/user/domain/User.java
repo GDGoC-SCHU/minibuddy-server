@@ -5,6 +5,7 @@ import com.minibuddy.feature.chat.domain.ChatStat;
 import com.minibuddy.global.converter.StringListConverter;
 import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +31,6 @@ public class User extends BaseEntity {
     @Convert(converter = StringListConverter.class)
     private List<String> keywords;
 
-    @Column(nullable = false)
     private String notificationToken;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -57,5 +57,18 @@ public class User extends BaseEntity {
     public void addScoreHistory(ScoreHistory history) {
         this.scoreHistories.add(history);
         history.setUser(this);
+    }
+
+    @Builder
+    public User(String userId, String name, LocalDate birthday, List<String> keywords, String notificationToken) {
+        this.userId = userId;
+        this.name = name;
+        this.birthday = birthday;
+        this.keywords = keywords;
+        this.notificationToken = notificationToken;
+    }
+
+    public void updateNotificationToken(String newNotificationToken) {
+        this.notificationToken = newNotificationToken;
     }
 }

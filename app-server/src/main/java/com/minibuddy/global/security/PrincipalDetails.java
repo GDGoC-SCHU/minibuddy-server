@@ -12,7 +12,6 @@ import java.util.Collections;
 public class PrincipalDetails implements UserDetails {
 
     private final String userId;
-    private final String name;
     private final String role;
 
     @Override
