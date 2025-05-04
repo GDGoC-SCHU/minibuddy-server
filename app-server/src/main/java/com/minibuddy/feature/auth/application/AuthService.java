@@ -1,5 +1,6 @@
 package com.minibuddy.feature.auth.application;
 
+import com.minibuddy.feature.user.domain.Score;
 import com.minibuddy.feature.user.domain.User;
 import com.minibuddy.feature.auth.dto.SignupRequest;
 import com.minibuddy.feature.user.dto.UserResponse;
@@ -27,6 +28,11 @@ public class AuthService {
                 .keywords(request.keywords())
                 .notificationToken(request.fcmToken())
                 .build();
+        Score score = Score.builder()
+                .userId(request.uid())
+                .user(user)
+                .build();
+        user.addScore(score);
         User saved = userRepository.save(user);
 
         return new UserResponse(

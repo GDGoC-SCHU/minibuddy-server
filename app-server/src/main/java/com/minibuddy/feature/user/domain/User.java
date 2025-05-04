@@ -48,6 +48,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MemoryResult> memoryResults = new ArrayList<>();
 
+    public void addScore(Score score) {
+        this.score = score;
+    }
+
     public void addChat(Chat chat) {
         this.chats.add(chat);
         chat.setUser(this);
