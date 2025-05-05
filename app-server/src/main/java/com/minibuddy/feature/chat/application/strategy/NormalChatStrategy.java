@@ -14,7 +14,7 @@ public class NormalChatStrategy implements ChatStrategy {
 
     @Override
     public boolean supports(int chatCount) {
-        return chatCount < 10;
+        return chatCount % 10 != 0;
     }
 
     @Override
