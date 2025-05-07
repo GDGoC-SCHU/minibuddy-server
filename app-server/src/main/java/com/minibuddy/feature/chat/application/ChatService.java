@@ -60,6 +60,8 @@ public class ChatService {
                 .build();
         Chat savedChat = chatRepository.save(chat);
 
+        chatStat.updateStatCount(savedChat.getDominantEmotion());
+
         ScoreHistory scoreHistory = getScoreHistory(user, savedChat.getEmotionScores());
         scoreHistory.updateScoreHistory(aiResponse.depScore(), aiResponse.anxScore(), aiResponse.strScore());
 
@@ -67,8 +69,10 @@ public class ChatService {
 
         if (aiResponse.isMemoryQuestion()) {
             Long questionId = saveMemoryQuestionWithId(user, aiResponse.reply(), chat.getEmotionScores());
+            servletResponse.setHeader("x-chat-type", "memory-question");
             return new AiMemoryQuestionReply(aiResponse.reply(), questionId);
         }
+        servletResponse.setHeader("x-chat-type", "normal");
         return new AiReply(aiResponse.reply());
     }
 
@@ -85,7 +89,7 @@ public class ChatService {
                 .content(request.getChat())
                 .isMemoryQuestion(true)
                 .isUser(true)
-                .emotionScores(new EmotionScores(0, 0, 0))
+                .emotionScores(new EmotionScores(0, 0, 0))  // TODO memoryQuestion에 대한 답변일 경우에는 감정 점수 어케 설정해야할지
                 .build();
         Chat savedChat = chatRepository.save(chat);
 
@@ -100,6 +104,7 @@ public class ChatService {
 
         scoreUpdater.updateMciScore(user, aiResponse.mciScore());
 
+        servletResponse.setHeader("x-chat-type", "memory-question");
         return new AiReply(aiResponse.reply());
     }
 
@@ -131,7 +136,7 @@ public class ChatService {
     }
 
     private ChatStat getChatStat(User user) {
-        // TODO ChatStat 일별로 어떻게 관리할 것인지
+        // TODO ChatStat등 일별로 관리되는 히스토리들 어떻게 관리할 것인지
         return chatStatRepository.findByUserAndDate(user, LocalDate.now())
                 .orElseGet(() -> chatStatRepository.save(ChatStat.builder()
                         .user(user)

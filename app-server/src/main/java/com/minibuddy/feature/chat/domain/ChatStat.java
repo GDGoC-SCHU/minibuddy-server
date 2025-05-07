@@ -1,5 +1,6 @@
 package com.minibuddy.feature.chat.domain;
 
+import com.minibuddy.feature.chat.domain.enums.EmotionType;
 import com.minibuddy.feature.user.domain.User;
 import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -50,5 +51,14 @@ public class ChatStat extends BaseEntity {
 
     public Integer updateTotalCount() {
         return ++this.totalCount;
+    }
+
+    public void updateStatCount(EmotionType dominantEmotion) {
+        switch (dominantEmotion) {
+            case DEPRESSION -> this.depressionCount++;
+            case ANXIETY -> this.anxietyCount++;
+            case STRESS -> this.stressCount++;
+            case NORMAL -> this.normalCount++;
+        }
     }
 }

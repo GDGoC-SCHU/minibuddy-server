@@ -49,8 +49,7 @@ public class Chat extends BaseEntity {
         this.isMemoryQuestion = isMemoryQuestion;
         this.isUser = isUser;
         this.emotionScores = emotionScores;
-//        TODO 주 감정 설정 로직
-//        this.dominantEmotion = ?
+        this.dominantEmotion = EmotionType.dominantEmotionType(emotionScores);
     }
 
     public void setUser(User user) {
