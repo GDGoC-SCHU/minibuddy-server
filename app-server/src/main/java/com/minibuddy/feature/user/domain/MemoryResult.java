@@ -4,6 +4,7 @@ import com.minibuddy.feature.chat.domain.Chat;
 import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,5 +35,14 @@ public class MemoryResult extends BaseEntity {
     @Lob
     private String mciReason;
 
-    private Integer depScore;
+//    private Integer depScore;
+
+    @Builder
+    public MemoryResult(User user, Chat answerChat, Chat questionChat, Integer mciScore, String mciReason) {
+        this.user = user;
+        this.answerChat = answerChat;
+        this.questionChat = questionChat;
+        this.mciScore = mciScore;
+        this.mciReason = mciReason;
+    }
 }

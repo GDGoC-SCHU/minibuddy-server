@@ -2,6 +2,7 @@ package com.minibuddy.feature.chat.api;
 
 import com.minibuddy.feature.chat.application.ChatService;
 import com.minibuddy.feature.chat.dto.AiReply;
+import com.minibuddy.feature.chat.dto.MemoryRequest;
 import com.minibuddy.feature.chat.dto.NormalRequest;
 import com.minibuddy.global.security.PrincipalDetails;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,5 +27,14 @@ public class ChatController {
             HttpServletResponse servletResponse
     ) {
         return chatService.processChat(session, request.getChat(), servletResponse);
+    }
+
+    @PostMapping("/memory-answer")
+    public AiReply memoryAnswer(
+            @AuthenticationPrincipal PrincipalDetails session,
+            @RequestBody MemoryRequest request,
+            HttpServletResponse servletResponse
+    ) {
+        return chatService.processMemoryQuestion(session, request, servletResponse);
     }
 }
