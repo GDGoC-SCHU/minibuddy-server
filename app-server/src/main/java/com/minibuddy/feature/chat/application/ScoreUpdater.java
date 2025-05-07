@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScoreUpdater {
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public AiReply updateWithReply(User user, Chat chat, String reply, HttpServletResponse servletResponse) {
+    public AiReply updateWithReply(User user, Chat chat, String reply, boolean isMemoryQuestion, HttpServletResponse servletResponse) {
         user.getScore().updateDepAnxStrScore(
                 chat.getEmotionScores().getDepressionScore(),
                 chat.getEmotionScores().getAnxietyScore(),
                 chat.getEmotionScores().getStressScore());
-        if (chat.getIsMemoryQuestion()) {
+        if (isMemoryQuestion) {
             servletResponse.setHeader("X-Chat-Response-Type", "memory-question");
             return new AiMemoryQuestionReply(reply, chat.getChatId());
         } else {

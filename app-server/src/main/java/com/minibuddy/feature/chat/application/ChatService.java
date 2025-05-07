@@ -7,7 +7,9 @@ import com.minibuddy.feature.chat.domain.EmotionScores;
 import com.minibuddy.feature.chat.dto.AiReply;
 import com.minibuddy.feature.chat.infra.ChatRepository;
 import com.minibuddy.feature.chat.infra.ChatStatRepository;
+import com.minibuddy.feature.user.domain.ScoreHistory;
 import com.minibuddy.feature.user.domain.User;
+import com.minibuddy.feature.user.infra.ScoreHistoryRepository;
 import com.minibuddy.feature.user.infra.UserRepository;
 import com.minibuddy.global.error.code.UserErrorCode;
 import com.minibuddy.global.error.exception.CustomException;
@@ -28,6 +30,7 @@ public class ChatService {
     private final ChatStrategyFactory strategyFactory;
     private final ScoreUpdater scoreUpdater;
     private final ChatRepository chatRepository;
+    private final ScoreHistoryRepository scoreHistoryRepository;
 
     @Transactional
     public AiReply processChat(PrincipalDetails session, String message, HttpServletResponse servletResponse) {
@@ -36,21 +39,52 @@ public class ChatService {
         ChatStat chatStat = getChatStat(user);
         Integer chatCount = chatStat.updateTotalCount();
 
-        // 전략 선택
         ChatStrategy strategy = strategyFactory.getStrategy(chatCount);
-        // grpc 호출(ai 일반 응답 혹은 기억력 질문 생성)
+
         ChatResponse aiResponse = strategy.process(user, message);
         Chat chat = Chat.builder()
                 .user(user)
                 .content(message)
-                .isMemoryQuestion(aiResponse.isMemoryQuestion())
-                .isUser(!aiResponse.isMemoryQuestion())
+                .isMemoryQuestion(false)
+                .isUser(true)
                 .emotionScores(new EmotionScores(aiResponse.depScore(), aiResponse.anxScore(), aiResponse.strScore()))
                 .build();
         Chat savedChat = chatRepository.save(chat);
-        // TODO History 관리
+        if (aiResponse.isMemoryQuestion()) {
+            saveMemoryQuestion(user, aiResponse.reply(), chat.getEmotionScores());
+        }
 
-        return scoreUpdater.updateWithReply(user, savedChat, aiResponse.reply(), servletResponse);
+        ScoreHistory scoreHistory = getScoreHistory(user, aiResponse);
+        scoreHistory.updateScoreHistory(aiResponse.depScore(), aiResponse.anxScore(), aiResponse.strScore());
+
+        return scoreUpdater.updateWithReply(user, savedChat, aiResponse.reply(), aiResponse.isMemoryQuestion(), servletResponse);
+    }
+
+    private void saveMemoryQuestion(User user, String reply, EmotionScores scores) {
+        Chat chat = Chat.builder()
+                .user(user)
+                .content(reply)
+                .isMemoryQuestion(true)
+                .isUser(false)
+                .emotionScores(scores)
+                .build();
+        chatRepository.save(chat);
+    }
+
+    private ScoreHistory getScoreHistory(User user, ChatResponse aiResponse) {
+        return scoreHistoryRepository.findByUserAndDate(user, LocalDate.now())
+                .orElseGet(() -> {
+                            ScoreHistory build = ScoreHistory.builder()
+                                    .user(user)
+                                    .date(LocalDate.now())
+                                    .depScore(aiResponse.depScore())
+                                    .anxScore(aiResponse.anxScore())
+                                    .strScore(aiResponse.strScore())
+                                    .build();
+                            user.addScoreHistory(build);
+                            return build;
+                        }
+                );
     }
 
     private ChatStat getChatStat(User user) {
