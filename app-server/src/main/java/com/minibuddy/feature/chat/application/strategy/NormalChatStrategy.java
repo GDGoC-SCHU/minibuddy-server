@@ -1,6 +1,7 @@
 package com.minibuddy.feature.chat.application.strategy;
 
 import com.minibuddy.feature.ai.client.ChatClient;
+import com.minibuddy.feature.ai.client.dto.ChatResponse;
 import com.minibuddy.feature.chat.application.ChatStrategy;
 import com.minibuddy.feature.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class NormalChatStrategy implements ChatStrategy {
     }
 
     @Override
-    public Object process(User user, String chat) {
+    public ChatResponse process(User user, String chat) {
         return client.normalChat(user.getUserId(), chat);
     }
 }

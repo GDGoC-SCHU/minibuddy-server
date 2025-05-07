@@ -1,9 +1,8 @@
 package com.minibuddy.feature.ai.application;
 
 import com.minibuddy.feature.ai.client.ChatClient;
+import com.minibuddy.feature.ai.client.dto.ChatResponse;
 import com.minibuddy.feature.ai.client.dto.MemoryAnswerResponse;
-import com.minibuddy.feature.ai.client.dto.MemoryQuestionResponse;
-import com.minibuddy.feature.ai.client.dto.NormalChatResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +10,20 @@ import org.springframework.stereotype.Service;
 @Profile("dev")
 public class FakeChatClientService implements ChatClient {
     @Override
-    public NormalChatResponse normalChat(String userId, String message) {
+    public ChatResponse normalChat(String userId, String message) {
         int score = (int) (Math.random() * 20);
-        return new NormalChatResponse("normal reply", score, score, score);
+        return new ChatResponse("normal reply", score, score, score, false);
     }
 
     @Override
-    public MemoryQuestionResponse memoryChat(String userId, String answer) {
+    public ChatResponse memoryChat(String userId, String answer) {
         int score = (int) (Math.random() * 20);
-        return new MemoryQuestionResponse("memory question", score);
+        return new ChatResponse("memory question", score, score, score, true);
     }
 
     @Override
     public MemoryAnswerResponse memoryAnswer(String userId, String answer, String questionId) {
         int score = (int) (Math.random() * 20);
-        return new MemoryAnswerResponse("memory answer", score, score, "reason");
+        return new MemoryAnswerResponse("memory answer", score, "reason");
     }
 }

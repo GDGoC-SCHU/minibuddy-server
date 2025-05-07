@@ -3,8 +3,6 @@ package com.minibuddy.feature.ai.application;
 import com.minibuddy.app.*;
 import com.minibuddy.feature.ai.client.ChatClient;
 import com.minibuddy.feature.ai.client.dto.MemoryAnswerResponse;
-import com.minibuddy.feature.ai.client.dto.MemoryQuestionResponse;
-import com.minibuddy.feature.ai.client.dto.NormalChatResponse;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -18,32 +16,36 @@ public class ChatClientService implements ChatClient {
 
     // TODO Mapper 사용으로 dto 변환 자동화...?
     @Override
-    public NormalChatResponse normalChat(String userId, String message) {
+    public com.minibuddy.feature.ai.client.dto.ChatResponse normalChat(String userId, String message) {
         ChatRequest request = ChatRequest.newBuilder()
                 .setUserId(userId)
                 .setMessage(message)
                 .build();
         ChatResponse response = serviceBlockingStub.getChatResponse(request);
 
-        return new NormalChatResponse(
+        return new com.minibuddy.feature.ai.client.dto.ChatResponse(
                 response.getReply(),
                 response.getDepScore(),
                 response.getAnxScore(),
-                response.getStrScore()
+                response.getStrScore(),
+                false
         );
     }
 
     @Override
-    public MemoryQuestionResponse memoryChat(String userId, String message) {
+    public com.minibuddy.feature.ai.client.dto.ChatResponse memoryChat(String userId, String message) {
         ChatRequest request = ChatRequest.newBuilder()
                 .setUserId(userId)
                 .setMessage(message)
                 .build();
         com.minibuddy.app.MemoryQuestionResponse response = serviceBlockingStub.getMemoryQuestion(request);
 
-        return new MemoryQuestionResponse(
+        return new com.minibuddy.feature.ai.client.dto.ChatResponse(
                 response.getQuestion(),
-                response.getDepScore()
+                response.getDepScore(),
+                response.getAnxScore(),
+                response.getStrScore(),
+                true
         );
     }
 
@@ -59,7 +61,6 @@ public class ChatClientService implements ChatClient {
         return new MemoryAnswerResponse(
                 response.getReply(),
                 response.getMciScore(),
-                response.getDepScore(),
                 response.getMciReason()
         );
     }

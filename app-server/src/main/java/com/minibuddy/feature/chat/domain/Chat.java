@@ -1,10 +1,10 @@
 package com.minibuddy.feature.chat.domain;
 
 import com.minibuddy.feature.chat.domain.enums.EmotionType;
-import com.minibuddy.feature.user.domain.MemoryResult;
 import com.minibuddy.feature.user.domain.User;
 import com.minibuddy.global.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,8 +38,20 @@ public class Chat extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmotionType dominantEmotion;
 
-    @OneToOne(mappedBy = "answerChat", cascade = CascadeType.ALL)
-    private MemoryResult memoryResult;
+//    @OneToOne(mappedBy = "answerChat", cascade = CascadeType.ALL)
+//    private MemoryResult memoryResult;
+
+
+    @Builder
+    public Chat(User user, String content, Boolean isMemoryQuestion, Boolean isUser, EmotionScores emotionScores) {
+        this.user = user;
+        this.content = content;
+        this.isMemoryQuestion = isMemoryQuestion;
+        this.isUser = isUser;
+        this.emotionScores = emotionScores;
+//        TODO 주 감정 설정 로직
+//        this.dominantEmotion = ?
+    }
 
     public void setUser(User user) {
         this.user = user;

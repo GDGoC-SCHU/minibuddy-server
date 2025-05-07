@@ -1,9 +1,10 @@
 package com.minibuddy.feature.ai.client.dto;
 
-public record NormalChatResponse(
+public record ChatResponse(
         String reply,
         int depScore,
         int anxScore,
-        int strScore
+        int strScore,
+        boolean isMemoryQuestion
 ) {
 }

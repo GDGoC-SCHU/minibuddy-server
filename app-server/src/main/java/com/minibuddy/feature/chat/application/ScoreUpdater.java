@@ -1,10 +1,10 @@
 package com.minibuddy.feature.chat.application;
 
-import com.minibuddy.feature.ai.client.dto.MemoryQuestionResponse;
-import com.minibuddy.feature.ai.client.dto.NormalChatResponse;
+import com.minibuddy.feature.chat.domain.Chat;
+import com.minibuddy.feature.chat.dto.AiMemoryQuestionReply;
+import com.minibuddy.feature.chat.dto.AiReply;
 import com.minibuddy.feature.user.domain.User;
-import com.minibuddy.global.error.code.ChatErrorCode;
-import com.minibuddy.global.error.exception.CustomException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,23 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScoreUpdater {
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public String updateWithReply(User user, Object aiResponse) {
-        if (aiResponse instanceof NormalChatResponse) {
-            return handleNormalResponse(user, (NormalChatResponse) aiResponse);
-        } else if (aiResponse instanceof MemoryQuestionResponse) {
-            return handleMemoryQuestionResponse(user, (MemoryQuestionResponse) aiResponse);
+    public AiReply updateWithReply(User user, Chat chat, String reply, HttpServletResponse servletResponse) {
+        user.getScore().updateDepAnxStrScore(
+                chat.getEmotionScores().getDepressionScore(),
+                chat.getEmotionScores().getAnxietyScore(),
+                chat.getEmotionScores().getStressScore());
+        if (chat.getIsMemoryQuestion()) {
+            servletResponse.setHeader("X-Chat-Response-Type", "memory-question");
+            return new AiMemoryQuestionReply(reply, chat.getChatId());
         } else {
-            throw new CustomException(ChatErrorCode.UNSUPPORTED_RESPONSE_TYPE);
+            servletResponse.setHeader("X-Chat-Response-Type", "normal");
+            return new AiReply(reply);
         }
-    }
-
-    private String handleMemoryQuestionResponse(User user, MemoryQuestionResponse aiResponse) {
-        user.getScore().updateDepScore(aiResponse.depScore());
-        return aiResponse.question();
-    }
-
-    private String handleNormalResponse(User user, NormalChatResponse aiResponse) {
-        user.getScore().updateDepAnxStrScore(aiResponse.depScore(), aiResponse.anxScore(), aiResponse.strScore());
-        return aiResponse.reply();
     }
 }
