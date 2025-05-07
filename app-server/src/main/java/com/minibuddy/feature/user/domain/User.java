@@ -75,4 +75,10 @@ public class User extends BaseEntity {
     public void updateNotificationToken(String newNotificationToken) {
         this.notificationToken = newNotificationToken;
     }
+
+    public void updateProfile(String nickname, LocalDate birthdate, List<String> keywords) {
+        this.name = nickname;
+        this.birthday = birthdate;
+        this.keywords = keywords;
+    }
 }

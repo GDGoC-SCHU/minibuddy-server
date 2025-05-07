@@ -1,16 +1,14 @@
 package com.minibuddy.feature.user.api;
 
 import com.minibuddy.feature.user.application.UserService;
-import com.minibuddy.feature.user.dto.UpdateFcmRequest;
+import com.minibuddy.feature.user.dto.FcmUpdateRequest;
+import com.minibuddy.feature.user.dto.ProfileUpdateRequest;
 import com.minibuddy.feature.user.dto.UserResponse;
 import com.minibuddy.global.response.SuccessResponse;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +25,25 @@ public class UserController {
     @PostMapping("/fcm-update")
     public SuccessResponse<UserResponse> fcmTokenUpdate(
             @AuthenticationPrincipal PrincipalDetails session,
-            @RequestBody UpdateFcmRequest request
+            @RequestBody FcmUpdateRequest request
     ) {
         UserResponse response = userService.updateNotificationToken(session, request);
         return SuccessResponse.ok(response);
+    }
+
+    @PatchMapping("/profile")
+    public SuccessResponse<UserResponse> updateProfile(
+            @AuthenticationPrincipal PrincipalDetails session,
+            @RequestBody ProfileUpdateRequest request
+    ) {
+        return SuccessResponse.ok(userService.updateProfile(session, request));
+    }
+
+    @GetMapping("/profile")
+    public SuccessResponse<UserResponse> getProfile(
+            @AuthenticationPrincipal PrincipalDetails session
+    ) {
+        return SuccessResponse.ok(userService.profile(session));
     }
 }
 
