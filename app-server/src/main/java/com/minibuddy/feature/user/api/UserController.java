@@ -73,9 +73,9 @@ public class UserController {
     @GetMapping("/history")
     public SuccessResponse<List<EmotionBasedHistory>> getDepressionHistory(
             @AuthenticationPrincipal PrincipalDetails session,
-            @RequestParam EmotionTypeRequest emotionType
+            @RequestParam EmotionTypeRequest type
     ) {
-        return SuccessResponse.ok(userHistoryService.emotionHistory(session, emotionType));
+        return SuccessResponse.ok(userHistoryService.emotionHistory(session, type));
     }
 
     @GetMapping("/history/memory")
