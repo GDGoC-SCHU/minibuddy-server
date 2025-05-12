@@ -1,15 +1,14 @@
 package com.minibuddy.feature.user.api;
 
 import com.minibuddy.feature.user.application.UserService;
-import com.minibuddy.feature.user.dto.FcmUpdateRequest;
-import com.minibuddy.feature.user.dto.ProfileUpdateRequest;
-import com.minibuddy.feature.user.dto.UserResponse;
-import com.minibuddy.feature.user.dto.UserStatusResponse;
+import com.minibuddy.feature.user.dto.*;
 import com.minibuddy.global.response.SuccessResponse;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,6 +51,13 @@ public class UserController {
             @AuthenticationPrincipal PrincipalDetails session
     ) {
         return SuccessResponse.ok(userService.status(session));
+    }
+
+    @GetMapping("/emotion/flow")
+    public SuccessResponse<List<UserEmotionFlowResponse>> getEmotionFlow(
+            @AuthenticationPrincipal PrincipalDetails session
+    ) {
+        return SuccessResponse.ok(userService.emotionFlow(session));
     }
 }
 

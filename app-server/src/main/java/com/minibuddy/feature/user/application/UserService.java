@@ -5,10 +5,7 @@ import com.minibuddy.feature.chat.infra.ChatRepository;
 import com.minibuddy.feature.chat.infra.ChatStatRepository;
 import com.minibuddy.feature.user.domain.Score;
 import com.minibuddy.feature.user.domain.User;
-import com.minibuddy.feature.user.dto.FcmUpdateRequest;
-import com.minibuddy.feature.user.dto.ProfileUpdateRequest;
-import com.minibuddy.feature.user.dto.UserResponse;
-import com.minibuddy.feature.user.dto.UserStatusResponse;
+import com.minibuddy.feature.user.dto.*;
 import com.minibuddy.feature.user.infra.UserRepository;
 import com.minibuddy.global.error.code.UserErrorCode;
 import com.minibuddy.global.error.exception.CustomException;
@@ -17,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -85,8 +84,26 @@ public class UserService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<UserEmotionFlowResponse> emotionFlow(PrincipalDetails session) {
+        User user = getCurrentUser(session);
+        List<ChatStat> chatStats = chatStatRepository.findByUser(user);
+
+        return chatStats.stream()
+                .sorted(Comparator.comparing(ChatStat::getDate))
+                .limit(14)
+                .map(it -> new UserEmotionFlowResponse(
+                        it.getDate(),
+                        it.getDepressionCount(),
+                        it.getAnxietyCount(),
+                        it.getStressCount()
+                ))
+                .toList();
+    }
+
     private User getCurrentUser(PrincipalDetails session) {
         return userRepository.findById(session.getUsername())
                 .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
     }
+
 }
