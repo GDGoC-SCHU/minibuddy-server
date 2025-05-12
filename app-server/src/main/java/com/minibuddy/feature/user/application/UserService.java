@@ -8,6 +8,7 @@ import com.minibuddy.feature.chat.infra.ChatStatRepository;
 import com.minibuddy.feature.user.domain.Score;
 import com.minibuddy.feature.user.domain.User;
 import com.minibuddy.feature.user.dto.*;
+import com.minibuddy.feature.user.infra.ScoreHistoryRepository;
 import com.minibuddy.feature.user.infra.UserRepository;
 import com.minibuddy.global.error.code.UserErrorCode;
 import com.minibuddy.global.error.exception.CustomException;
@@ -16,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +33,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ChatStatRepository chatStatRepository;
     private final ChatRepository chatRepository;
+    private final ScoreHistoryRepository scoreHistoryRepository;
 
     public UserResponse updateNotificationToken(PrincipalDetails session, FcmUpdateRequest request) {
         User currentUser = getCurrentUser(session);
@@ -89,20 +94,31 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmotionFlowResponse> emotionFlow(PrincipalDetails session) {
-        User currentUser = getCurrentUser(session);
-        List<ChatStat> chatStats = chatStatRepository.findByUser(currentUser);
+    public List<EmotionFlowResponse> getMonthlyEmotionFlow(
+            PrincipalDetails session,
+            int year,
+            int month
+    ) {
+        User user = getCurrentUser(session);
 
-        return chatStats.stream()
-                .sorted(Comparator.comparing(ChatStat::getDate))
-                .limit(14)
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        YearMonth currentYearMonth = YearMonth.from(now);
+
+        LocalDate startDate = currentYearMonth.atDay(1);
+        LocalDate endDate = currentYearMonth.atEndOfMonth();
+
+//        LocalDate startDate = LocalDate.of(year, month, 1);
+//        LocalDate endDate = startDate.withDayOfMonth(
+//                startDate.lengthOfMonth()
+//        );
+
+        return scoreHistoryRepository.findByUserAndDateBetween(user, startDate, endDate).stream()
                 .map(it -> new EmotionFlowResponse(
                         it.getDate(),
-                        it.getDepressionCount(),
-                        it.getAnxietyCount(),
-                        it.getStressCount()
-                ))
-                .toList();
+                        it.getDepScore(),
+                        it.getAnxScore(),
+                        it.getStrScore()
+                )).toList();
     }
 
     @Transactional(readOnly = true)
