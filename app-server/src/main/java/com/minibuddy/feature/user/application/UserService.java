@@ -105,12 +105,12 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public EmotionDistributionResponse emotionDistribution(PrincipalDetails session) {
         User currentUser = getCurrentUser(session);
         List<Chat> chats = chatRepository.findAllByUser(currentUser).stream()
                 .filter(Chat::getIsUser)
                 .toList();
-
 
         Map<EmotionType, Long> emotionCounts = chats.stream()
                 .map(Chat::getDominantEmotion)
@@ -132,5 +132,4 @@ public class UserService {
         return userRepository.findById(session.getUsername())
                 .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
     }
-
 }
