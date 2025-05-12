@@ -54,10 +54,17 @@ public class UserController {
     }
 
     @GetMapping("/emotion/flow")
-    public SuccessResponse<List<UserEmotionFlowResponse>> getEmotionFlow(
+    public SuccessResponse<List<EmotionFlowResponse>> getEmotionFlow(
             @AuthenticationPrincipal PrincipalDetails session
     ) {
         return SuccessResponse.ok(userService.emotionFlow(session));
+    }
+
+    @GetMapping("/emotion/distribution")
+    public SuccessResponse<EmotionDistributionResponse> getEmotionDistribution(
+            @AuthenticationPrincipal PrincipalDetails session
+    ) {
+        return SuccessResponse.ok(userService.emotionDistribution(session));
     }
 }
 
