@@ -33,7 +33,7 @@ public class User extends BaseEntity {
 
     private String notificationToken;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Score score;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

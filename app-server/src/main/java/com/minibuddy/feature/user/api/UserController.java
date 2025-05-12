@@ -1,7 +1,9 @@
 package com.minibuddy.feature.user.api;
 
+import com.minibuddy.feature.user.application.UserHistoryService;
 import com.minibuddy.feature.user.application.UserService;
 import com.minibuddy.feature.user.dto.*;
+import com.minibuddy.feature.user.dto.EmotionBasedHistory;
 import com.minibuddy.global.response.SuccessResponse;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserHistoryService userHistoryService;
 
     @PostMapping("/delete")
     public SuccessResponse<String> userWithdraw(@AuthenticationPrincipal PrincipalDetails session) {
@@ -65,6 +68,21 @@ public class UserController {
             @AuthenticationPrincipal PrincipalDetails session
     ) {
         return SuccessResponse.ok(userService.emotionDistribution(session));
+    }
+
+    @GetMapping("/history")
+    public SuccessResponse<List<EmotionBasedHistory>> getDepressionHistory(
+            @AuthenticationPrincipal PrincipalDetails session,
+            @RequestParam EmotionTypeRequest emotionType
+    ) {
+        return SuccessResponse.ok(userHistoryService.emotionHistory(session, emotionType));
+    }
+
+    @GetMapping("/history/memory")
+    public SuccessResponse<List<MemoryHistory>> getMemoryHistory(
+            @AuthenticationPrincipal PrincipalDetails session
+    ) {
+        return SuccessResponse.ok(userHistoryService.memoryHistory(session));
     }
 }
 
