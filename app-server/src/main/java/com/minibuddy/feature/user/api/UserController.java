@@ -4,6 +4,7 @@ import com.minibuddy.feature.user.application.UserService;
 import com.minibuddy.feature.user.dto.FcmUpdateRequest;
 import com.minibuddy.feature.user.dto.ProfileUpdateRequest;
 import com.minibuddy.feature.user.dto.UserResponse;
+import com.minibuddy.feature.user.dto.UserStatusResponse;
 import com.minibuddy.global.response.SuccessResponse;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,13 @@ public class UserController {
             @AuthenticationPrincipal PrincipalDetails session
     ) {
         return SuccessResponse.ok(userService.profile(session));
+    }
+
+    @GetMapping("/status")
+    public SuccessResponse<UserStatusResponse> getStatus(
+            @AuthenticationPrincipal PrincipalDetails session
+    ) {
+        return SuccessResponse.ok(userService.status(session));
     }
 }
 
