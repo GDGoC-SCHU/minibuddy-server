@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(config -> {
-                    config.requestMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**").permitAll();
+                    config.requestMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**", "/health/**", "/error/**").permitAll();
                     config.requestMatchers("/api/**").authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)
