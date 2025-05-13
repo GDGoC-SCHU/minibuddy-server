@@ -17,9 +17,8 @@ spring:
     show-sql: true
 
 
-
 firebase:
-  key-path: app-server/src/main/resources/db-account-key.json
+  key-path: ${GOOGLE_CREDENTIALS_PATH}
 grpc:
   client:
     stockService: # 이 이름이 @GrpcClient 와 이름이 일치해야함.
