@@ -125,7 +125,7 @@ public class UserService {
     public EmotionDistributionResponse emotionDistribution(PrincipalDetails session) {
         User currentUser = getCurrentUser(session);
         List<Chat> chats = chatRepository.findAllByUser(currentUser).stream()
-                .filter(Chat::getIsUser)
+                .filter(it -> !it.getIsMemoryQuestion())
                 .toList();
 
         Map<EmotionType, Long> emotionCounts = chats.stream()

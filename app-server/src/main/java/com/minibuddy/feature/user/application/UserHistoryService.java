@@ -35,6 +35,7 @@ public class UserHistoryService {
         return chats.stream()
                 .filter(Chat::getIsUser)
                 .filter(it -> it.getDominantEmotion().equals(EmotionType.valueOf(request.name())))
+                .limit(10)
                 .map(it -> new EmotionBasedHistory(
                         it.getCreatedAt().toLocalDate(),
                         it.getContent()
@@ -46,6 +47,7 @@ public class UserHistoryService {
         List<MemoryResult> memoryResults = memoryResultRepository.findByUser(currentUser);
 
         return memoryResults.stream()
+                .limit(10)
                 .map(it -> new MemoryHistory(
                         it.getCreatedAt().toLocalDate(),
                         it.getQuestionChat().getContent(),
