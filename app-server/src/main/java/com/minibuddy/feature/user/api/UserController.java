@@ -7,13 +7,9 @@ import com.minibuddy.feature.user.dto.EmotionBasedHistory;
 import com.minibuddy.global.response.SuccessResponse;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -62,11 +58,11 @@ public class UserController {
 
     @GetMapping("/emotion/flow")
     public SuccessResponse<List<EmotionFlowResponse>> getMonthlyEmotionFlow(
-            @AuthenticationPrincipal PrincipalDetails session,
-            @RequestParam int year,
-            @RequestParam int month
+            @AuthenticationPrincipal PrincipalDetails session
+//            @RequestParam int year,
+//            @RequestParam int month
     ) {
-        return SuccessResponse.ok(userService.getMonthlyEmotionFlow(session, year, month));   // TODO month
+        return SuccessResponse.ok(userService.getMonthlyEmotionFlow(session, 1, 1));   // TODO month
     }
 
     @GetMapping("/emotion/distribution")
