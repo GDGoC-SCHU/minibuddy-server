@@ -16,6 +16,6 @@ async function bootstrap() {
   grpcApp.listen();
 
   const httpApp = await NestFactory.create(AppModule);
-  await httpApp.listen(process.env.PORT || 8081); // Cloud Run용
+  await httpApp.listen(process.env.PORT || 8080); // Cloud Run용
 }
 bootstrap();
