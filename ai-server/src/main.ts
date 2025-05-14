@@ -5,17 +5,15 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 async function bootstrap() {
-  const grpcApp = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.GRPC,
     options: {
       package: 'chat',
       protoPath: join(__dirname, './grpc/chat.proto'),
-      url: '0.0.0.0:50051', // gRPC는 다른 포트
+      url: '0.0.0.0:8080', // Cloud Run의 요구사항: 반드시 PORT에 맞춰야 함
     },
   });
-  grpcApp.listen();
 
-  const httpApp = await NestFactory.create(AppModule);
-  await httpApp.listen(process.env.PORT || 8080); // Cloud Run용
+  await app.listen();
 }
 bootstrap();
