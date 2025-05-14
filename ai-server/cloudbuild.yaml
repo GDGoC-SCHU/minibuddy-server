@@ -33,6 +33,8 @@ steps:
         "--port=8080",
         "--allow-unauthenticated",
         "--timeout=300",
+        "--update-secrets",
+        "GOOGLE_API_KEY=GOOGLE_API_KEY:latest",
       ]
     id: Deploy-ai-server
 
