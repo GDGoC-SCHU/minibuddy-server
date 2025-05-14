@@ -1,0 +1,44 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-t",
+        "asia-northeast3-docker.pkg.dev/minibuddy-456409/cloud-run-source-deploy/minibuddy-server/minibuddy-ai-server:$COMMIT_SHA",
+        ".",
+        "-f",
+        "Dockerfile",
+      ]
+    dir: "ai-server"
+    id: Build-ai-server
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "push",
+        "asia-northeast3-docker.pkg.dev/minibuddy-456409/cloud-run-source-deploy/minibuddy-server/minibuddy-ai-server:$COMMIT_SHA",
+      ]
+    id: Push-ai-server
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "minibuddy-ai-server",
+        "--platform=managed",
+        "--region=asia-northeast3",
+        "--image=asia-northeast3-docker.pkg.dev/minibuddy-456409/cloud-run-source-deploy/minibuddy-server/minibuddy-ai-server:$COMMIT_SHA",
+        "--port=8081",
+        "--allow-unauthenticated",
+        "--timeout=300",
+      ]
+    id: Deploy-ai-server
+
+images:
+  - asia-northeast3-docker.pkg.dev/minibuddy-456409/cloud-run-source-deploy/minibuddy-server/minibuddy-ai-server:$COMMIT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: ALLOW_LOOSE
