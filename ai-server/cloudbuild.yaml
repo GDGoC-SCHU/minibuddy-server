@@ -30,7 +30,7 @@ steps:
         "--platform=managed",
         "--region=asia-northeast3",
         "--image=asia-northeast3-docker.pkg.dev/minibuddy-456409/cloud-run-source-deploy/minibuddy-server/minibuddy-ai-server:$COMMIT_SHA",
-        "--port=8081",
+        "--port=8080",
         "--allow-unauthenticated",
         "--timeout=300",
       ]
