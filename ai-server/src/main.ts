@@ -1,3 +1,4 @@
+// main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -9,7 +10,7 @@ async function bootstrap() {
     options: {
       package: 'chat',
       protoPath: join(__dirname, './grpc/chat.proto'),
-      url: '0.0.0.0:8081',
+      url: '0.0.0.0:8080', // Cloud Run의 요구사항: 반드시 PORT에 맞춰야 함
     },
   });
 
