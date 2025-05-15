@@ -4,7 +4,13 @@ export async function getEmotionScores(text: string): Promise<{ dep: number; anx
     const res = await gemini.invoke([
         [
             'system',
-            '다음 메시지에서 우울, 불안, 스트레스 점수를 추정해줘. 반드시 이 JSON 형식으로만 응답해: {"dep": number, "anx": number, "str": number}',
+            `Your task is to evaluate user messages and assign numerical scores for depression, anxiety, and stress.
+You must respond only in the following JSON format:
+{"dep": number, "anx": number, "str": number}
+The values must satisfy these constraints:
+- Each number must be a real number between 0 and 30, inclusive.
+- Do not include any explanation, commentary, or additional text.
+- If the input is insufficient for assessment, make your best estimate within the allowed range.`,
         ],
         ['human', text],
     ]);
@@ -19,6 +25,12 @@ export async function getEmotionScores(text: string): Promise<{ dep: number; anx
     if (!jsonMatch) {
         throw new Error('No valid JSON object found in Gemini response');
     }
+
+    // 백틱 제거 및 줄바꿈 정리
+    const cleaned = content
+        .replace(/```json/g, '')
+        .replace(/```/g, '')
+        .trim();
 
     try {
         const parsed = JSON.parse(jsonMatch[0]);

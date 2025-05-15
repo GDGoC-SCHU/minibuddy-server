@@ -36,4 +36,4 @@ services:
       - cloudsql-proxy
       - app-server
     ports:
-      - "8082:${AI_PORT}"
+      - "${AI_PORT1}:${AI_PORT}"
