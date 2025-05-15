@@ -1,5 +1,8 @@
 package com.minibuddy.feature.chat.application;
 
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutureCallback;
+import com.google.api.core.ApiFutures;
 import com.minibuddy.feature.ai.client.ChatClient;
 import com.minibuddy.feature.ai.client.dto.ChatResponse;
 import com.minibuddy.feature.ai.client.dto.MemoryAnswerResponse;
@@ -11,6 +14,7 @@ import com.minibuddy.feature.chat.dto.AiReply;
 import com.minibuddy.feature.chat.dto.MemoryRequest;
 import com.minibuddy.feature.chat.infra.ChatRepository;
 import com.minibuddy.feature.chat.infra.ChatStatRepository;
+import com.minibuddy.feature.notification.NotificationService;
 import com.minibuddy.feature.user.domain.MemoryResult;
 import com.minibuddy.feature.user.domain.ScoreHistory;
 import com.minibuddy.feature.user.domain.User;
@@ -23,13 +27,17 @@ import com.minibuddy.global.error.exception.CustomException;
 import com.minibuddy.global.security.PrincipalDetails;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.concurrent.Executor;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatService {
 
     private final ChatClient chatClient;
@@ -40,6 +48,10 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ScoreHistoryRepository scoreHistoryRepository;
     private final MemoryResultRepository memoryResultRepository;
+    private final NotificationService notificationService;
+
+    @Qualifier("notificationExecutor")
+    private final Executor taskExecutor;
 
     @Transactional
     public AiReply processChat(PrincipalDetails session, String message, HttpServletResponse servletResponse) {
@@ -61,6 +73,7 @@ public class ChatService {
         Chat savedChat = chatRepository.save(chat);
 
         chatStat.updateStatCount(savedChat.getDominantEmotion());
+        sendNoti(user, savedChat.getEmotionScores());
 
         ScoreHistory scoreHistory = getScoreHistory(user, savedChat.getEmotionScores());
         scoreHistory.updateScoreHistory(aiResponse.depScore(), aiResponse.anxScore(), aiResponse.strScore());
@@ -144,4 +157,29 @@ public class ChatService {
                         .build())
                 );
     }
+
+    private void sendNoti(User user, EmotionScores scores) {
+        if (scores.getDepressionScore() >= 21 ||
+                scores.getAnxietyScore() >= 21 ||
+                scores.getStressScore() >= 21) {
+            ApiFuture<String> future = notificationService.send(
+                    user.getNotificationToken(),
+                    "Warning",
+                    "Take a moment to check your status."
+                    );
+
+            ApiFutures.addCallback(future, new ApiFutureCallback<>() {
+                @Override
+                public void onSuccess(String messageId) {
+                    log.info("Notification sent successfully: {}", messageId);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    log.error("Notification delivery failed", t);
+                }
+            }, taskExecutor);
+        }
+    }
+
 }

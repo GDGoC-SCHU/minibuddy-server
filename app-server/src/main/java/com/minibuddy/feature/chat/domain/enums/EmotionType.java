@@ -16,15 +16,19 @@ public enum EmotionType {
 
         int max = Math.max(Math.max(dep, anx), str);
 
+        // 모든 점수가 0인 경우
+        if (max == 0) {
+            return NORMAL;
+        }
+
         // 최대값과 일치하는 감정 타입 수집
         List<EmotionType> maxTypes = new ArrayList<>();
         if (dep == max) maxTypes.add(DEPRESSION);
         if (anx == max) maxTypes.add(ANXIETY);
         if (str == max) maxTypes.add(STRESS);
 
-        // 단일 최대값이면 해당 타입 반환
-        // 동점이거나 모든 점수가 0인 경우 NORMAL 반환
-        // 일단은..
-        return (maxTypes.size() == 1) ? maxTypes.get(0) : NORMAL;
+        // 최댓값 여러개면 그냥 첫번 째 요소로 우세감정 선정
+        return maxTypes.get(0);
     }
+
 }
