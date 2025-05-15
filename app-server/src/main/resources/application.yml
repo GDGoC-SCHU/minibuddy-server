@@ -21,8 +21,8 @@ firebase:
   key-path: ${GOOGLE_CREDENTIALS_PATH}
 grpc:
   client:
-    stockService: # 이 이름이 @GrpcClient 와 이름이 일치해야함.
-      address: static://localhost:8081
-      negotiation-type: PLAINTEXT
+    chatAiService: # 이 이름이 @GrpcClient 와 이름이 일치해야함.
+      address: static://minibuddy-ai-server-1011133607958.asia-northeast3.run.app:443
+      negotiation-type: TLS
 #    chatService:
 #      address:
