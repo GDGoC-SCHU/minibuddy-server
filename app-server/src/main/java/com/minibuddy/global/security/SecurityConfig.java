@@ -48,7 +48,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
-                "https://minibuddy-456409.firebaseapp.com"
+                "https://minibuddy-456409.firebaseapp.com",
+                "https://minibuddy-456409.web.app/"
         ));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
