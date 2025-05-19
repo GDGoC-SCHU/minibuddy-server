@@ -23,7 +23,7 @@ public class AuthService {
     public UserResponse register(SignupRequest request) {
         User user = User.builder()
                 .userId(request.uid())
-                .name(request.name())
+                .nickname(request.nickname())
                 .birthday(request.birthdate())
                 .keywords(request.keywords())
                 .notificationToken(request.fcmToken())
@@ -36,7 +36,7 @@ public class AuthService {
         User saved = userRepository.save(user);
 
         return new UserResponse(
-                saved.getName(),
+                saved.getNickname(),
                 saved.getBirthday(),
                 saved.getKeywords()
         );

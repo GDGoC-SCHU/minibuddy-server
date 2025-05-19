@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     private String userId;  // firebase UID
 
     @Column(nullable = false)
-    private String name;
+    private String nickname;
 
     @Column(nullable = false)
     private LocalDate birthday;
@@ -64,9 +64,9 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(String userId, String name, LocalDate birthday, List<String> keywords, String notificationToken) {
+    public User(String userId, String nickname, LocalDate birthday, List<String> keywords, String notificationToken) {
         this.userId = userId;
-        this.name = name;
+        this.nickname = nickname;
         this.birthday = birthday;
         this.keywords = keywords;
         this.notificationToken = notificationToken;
@@ -77,7 +77,7 @@ public class User extends BaseEntity {
     }
 
     public void updateProfile(String nickname, LocalDate birthdate, List<String> keywords) {
-        this.name = nickname;
+        this.nickname = nickname;
         this.birthday = birthdate;
         this.keywords = keywords;
     }
