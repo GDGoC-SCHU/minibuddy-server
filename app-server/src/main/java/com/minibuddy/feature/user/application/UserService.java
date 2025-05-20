@@ -40,7 +40,7 @@ public class UserService {
         currentUser.updateNotificationToken(request.getFcmToken());
 
         return new UserResponse(
-                currentUser.getName(),
+                currentUser.getNickname(),
                 currentUser.getBirthday(),
                 currentUser.getKeywords()
         );
@@ -56,7 +56,7 @@ public class UserService {
         currentUser.updateProfile(request.getNickname(), request.getBirthdate(), request.getKeywords());
 
         return new UserResponse(
-                currentUser.getName(),
+                currentUser.getNickname(),
                 currentUser.getBirthday(),
                 currentUser.getKeywords()
         );
@@ -67,7 +67,7 @@ public class UserService {
         User currentUser = getCurrentUser(session);
 
         return new UserResponse(
-                currentUser.getName(),
+                currentUser.getNickname(),
                 currentUser.getBirthday(),
                 currentUser.getKeywords()
         );

@@ -5,7 +5,7 @@ import java.util.List;
 
 public record SignupRequest(
         String uid,
-        String name,
+        String nickname,
         LocalDate birthdate,
         List<String> keywords,
         String fcmToken
