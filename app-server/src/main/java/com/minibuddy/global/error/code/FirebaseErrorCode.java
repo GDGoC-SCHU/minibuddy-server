@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum UserErrorCode implements ErrorCodeIfs {
+public enum FirebaseErrorCode implements ErrorCodeIfs {
 
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
-    FAILED_TO_DELETE_USER(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete user"),
+    INVALID_FIREBASE_UID(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid firebase uid"),
     ;
 
     private final HttpStatus httpStatus;
