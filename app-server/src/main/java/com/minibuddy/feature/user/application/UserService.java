@@ -1,5 +1,7 @@
 package com.minibuddy.feature.user.application;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.minibuddy.feature.chat.domain.Chat;
 import com.minibuddy.feature.chat.domain.ChatStat;
 import com.minibuddy.feature.chat.domain.enums.EmotionType;
@@ -10,10 +12,13 @@ import com.minibuddy.feature.user.domain.User;
 import com.minibuddy.feature.user.dto.*;
 import com.minibuddy.feature.user.infra.ScoreHistoryRepository;
 import com.minibuddy.feature.user.infra.UserRepository;
+import com.minibuddy.global.error.code.FirebaseErrorCode;
 import com.minibuddy.global.error.code.UserErrorCode;
 import com.minibuddy.global.error.exception.CustomException;
 import com.minibuddy.global.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -46,9 +52,23 @@ public class UserService {
         );
     }
 
+    @Transactional
     public String withdrawal(PrincipalDetails session) {
-        userRepository.deleteById(session.getUsername());
-        return "user deleted successfully";
+        try {
+            String firebaseUid = session.getUsername();
+            if(firebaseUid == null || firebaseUid.isEmpty()) {
+                throw new CustomException(UserErrorCode.FAILED_TO_DELETE_USER);
+            }
+            FirebaseAuth.getInstance().deleteUser(firebaseUid);
+            userRepository.deleteById(session.getUsername());
+            SecurityContextHolder.clearContext();
+
+            return "user deleted successfully";
+        } catch (FirebaseAuthException e) {
+            log.error("Firebase Error: {} | {}", e.getErrorCode(), e.getAuthErrorCode());
+            log.error("Stack Trace:", e);
+            throw new CustomException(FirebaseErrorCode.INVALID_FIREBASE_UID);
+        }
     }
 
     public UserResponse updateProfile(PrincipalDetails session, ProfileUpdateRequest request) {
