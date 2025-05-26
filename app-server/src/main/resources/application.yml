@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    user:
+      name: ${SECURITY_USERNAME}
+      password: ${SECURITY_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+
+firebase:
+  key-path: ${GOOGLE_CREDENTIALS_PATH}
+grpc:
+  client:
+    chatAiService: # 이 이름이 @GrpcClient 와 이름이 일치해야함.
+      address: static://minibuddy-ai-server-1011133607958.asia-northeast3.run.app:443
+      negotiation-type: TLS

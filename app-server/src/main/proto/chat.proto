@@ -28,13 +28,14 @@ message ChatResponse {
 message MemoryQuestionResponse {
   string question = 1;
   int32 dep_score = 2;
+  int32 anx_score = 3;
+  int32 str_score = 4;
 }
 
 message MemoryAnswerResult {
   string reply = 1;
   int32 mci_score = 2;
-  int32 dep_score = 3;
-  string mci_reason = 4;
+  string mci_reason = 3;
 }
 
 // -------- Service --------
